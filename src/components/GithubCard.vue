@@ -1,11 +1,13 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-const githubLogin = ref('')
-const githubName = ref('')
-const githubAvatarURL = ref('')
-const githubAccountURL = ref('')
-const githubFollowers = ref(0)
-const githubFollowing = ref(0)
+import { onMounted, reactive } from 'vue'
+const githubParams = reactive({
+  login: '',
+  name: '',
+  AvatarURL: '',
+  AccountURL: '',
+  followers: 0,
+  following: 0,
+})
 
 const props = defineProps({
   username: {
@@ -24,12 +26,12 @@ onMounted(() => {
   fetch(URL)
     .then((response) => response.json()) // DO response.json() first!!!
     .then((response) => {
-      githubAvatarURL.value = response.avatar_url
-      githubAccountURL.value = response.html_url
-      githubLogin.value = response.login
-      githubName.value = response.name
-      githubFollowers.value = response.followers
-      githubFollowing.value = response.following
+      githubParams.AvatarURL = response.avatar_url
+      githubParams.AccountURL = response.html_url
+      githubParams.login = response.login
+      githubParams.name = response.name
+      githubParams.followers = response.followers
+      githubParams.following = response.following
     })
     .catch((error) => {
       console.error('GitHubCard error', error)
@@ -40,24 +42,24 @@ onMounted(() => {
 <template>
   <div class="block">
     <div class="avatar">
-      <img class="avatar-photo" :src="githubAvatarURL" alt="A GitHub profile picture" />
+      <img class="avatar-photo" :src="githubParams.AvatarURL" alt="A GitHub profile picture" />
     </div>
 
     <div class="information">
       <div class="content">
         <div class="title">
-          <p class="login">{{ githubLogin }}</p>
-          <p class="aka">(aka {{ githubName }})</p>
+          <p class="login">{{ githubParams.login }}</p>
+          <p class="aka">(aka {{ githubParams.name }})</p>
         </div>
 
         <div class="stats">
-          <p class="subtitle">Followers: {{ githubFollowers }}</p>
-          <p class="subtitle">Following: {{ githubFollowing }}</p>
+          <p class="subtitle">Followers: {{ githubParams.followers }}</p>
+          <p class="subtitle">Following: {{ githubParams.following }}</p>
         </div>
       </div>
 
       <div class="link-btn">
-        <a class="link" :href="githubAccountURL">Go to GitHub profile</a>
+        <a class="link" :href="githubParams.AccountURL">Go to GitHub profile</a>
       </div>
     </div>
   </div>
