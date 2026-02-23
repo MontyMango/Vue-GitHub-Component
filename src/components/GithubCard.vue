@@ -22,21 +22,26 @@ const props = defineProps({
 onMounted(() => {
   // Fetch for GitHub username
   const URL = `https://api.github.com/users/${props.username}`
-  console.log(URL)
   fetch(URL)
-    .then((response) => response.json()) // DO response.json() first!!!
-    .then((response) => {
-      githubParams.AvatarURL = response.avatar_url
-      githubParams.AccountURL = response.html_url
-      githubParams.login = response.login
-      githubParams.name = response.name
-      githubParams.followers = response.followers
-      githubParams.following = response.following
+    .then(async (response) => {
+      const data = await response.json() // DO response.json() first!!!
+      // console.log('data: ', data)
+
+      // We will only store the values we need here
+      githubParams.AvatarURL = data.avatar_url
+      githubParams.AccountURL = data.html_url
+      githubParams.login = data.login
+      githubParams.name = data.name
+      githubParams.followers = data.followers
+      githubParams.following = data.following
     })
     .catch((error) => {
       console.error('GitHubCard error', error)
     })
 })
+
+// Debugging
+// console.log('githubParams loaded:', JSON.stringify(githubParams))
 </script>
 
 <template>
